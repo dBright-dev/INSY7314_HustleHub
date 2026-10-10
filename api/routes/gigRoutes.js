@@ -2,7 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();
 const gigController = require('../controllers/gigController');
-const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect: authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
 
 const gigFields = [
     body('title').trim().notEmpty().withMessage('Title is required'),
