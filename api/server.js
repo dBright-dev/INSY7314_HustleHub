@@ -11,6 +11,9 @@ const helmet = require('helmet');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const gigRoutes = require('./routes/gigRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
+const userRoutes = require('./routes/userRoutes');
 const requestLogger = require('./middleware/requestLogger');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -81,6 +84,9 @@ app.get('/api/health', (req, res) => {
 // 8. API ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/gigs', gigRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/users', userRoutes);
 
 
 // 9. 404 HANDLER (must be after all routes)

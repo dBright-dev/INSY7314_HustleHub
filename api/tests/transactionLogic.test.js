@@ -1,12 +1,12 @@
-jest.mock('../../models/Gig', () => ({ findOne: jest.fn() }));
-jest.mock('../../models/Booking', () => ({ create: jest.fn() }));
-jest.mock('../../models/Transaction', () => ({ create: jest.fn() }));
+jest.mock('../models/Gig', () => ({ findOne: jest.fn() }));
+jest.mock('../models/Booking', () => ({ create: jest.fn() }));
+jest.mock('../models/Transaction', () => ({ create: jest.fn() }));
 
 const mongoose = require('mongoose');
-const Gig = require('../../models/Gig');
-const Booking = require('../../models/Booking');
-const Transaction = require('../../models/Transaction');
-const { createBooking } = require('../../controllers/bookingController');
+const Gig = require('../models/Gig');
+const Booking = require('../models/Booking');
+const Transaction = require('../models/Transaction');
+const { createBooking } = require('../controllers/bookingController');
 
 describe('createBooking payment record', () => {
     afterEach(() => jest.restoreAllMocks());

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Gig = require('../../models/Gig');
+const Gig = require('../models/Gig');
 
 describe('Gig schema validation', () => {
     const validGig = {

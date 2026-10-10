@@ -1,103 +1,61 @@
-// controllers/userController.js
-const userModel = require('../models/userModel');
-const bcrypt = require('bcryptjs');
-const { AuthorizationError, NotFoundError } = require('../middleware/errorHandler');
+// controllers/userController.js — Mongoose-backed (replaces legacy file-store userModel)
+const User = require('../models/User');
 
 class UserController {
-    // ✅ Get all users (Admin only)
     async getAllUsers(req, res, next) {
         try {
-            const users = userModel.findAll();
-            const usersWithoutPasswords = users.map(({ password, ...rest }) => rest);
-            res.status(200).json({
-                success: true,
-                data: usersWithoutPasswords
-            });
-        } catch (error) {
-            next(error); // now next is defined
-        }
+            const users = await User.find().select('-passwordHash').sort({ createdAt: -1 });
+            res.status(200).json({ success: true, data: users });
+        } catch (error) { next(error); }
     }
 
-    // ✅ Get user by ID (own or admin)
     async getUserById(req, res, next) {
         try {
             const { id } = req.params;
-            // Check permission: user can view own profile or admin
-            if (req.user.userId !== id && req.user.role !== 'Admin') {
-                return next(new AuthorizationError('Access denied. You can only view your own profile.'));
+            const requesterId = String(req.user._id || req.user.id);
+            if (requesterId !== String(id) && req.user.role !== 'Admin') {
+                return res.status(403).json({ success: false, message: 'Access denied. You can only view your own profile.' });
             }
-
-            const user = userModel.findById(id);
-            if (!user) {
-                return next(new NotFoundError('User not found'));
-            }
-
-            const { password, ...userWithoutPassword } = user;
-            res.status(200).json({
-                success: true,
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            next(error);
-        }
+            const user = await User.findById(id).select('-passwordHash');
+            if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+            res.status(200).json({ success: true, data: user });
+        } catch (error) { next(error); }
     }
 
-    // ✅ Update user (own or admin)
     async updateUser(req, res, next) {
         try {
             const { id } = req.params;
-            const updateData = req.body;
-
-            if (req.user.userId !== id && req.user.role !== 'Admin') {
-                return next(new AuthorizationError('Access denied. You can only update your own profile.'));
+            const requesterId = String(req.user._id || req.user.id);
+            if (requesterId !== String(id) && req.user.role !== 'Admin') {
+                return res.status(403).json({ success: false, message: 'Access denied. You can only update your own profile.' });
             }
-
-            // If password provided, hash it
-            if (updateData.password) {
-                updateData.password = await bcrypt.hash(updateData.password, 10);
+            const { name, role } = req.body;
+            const updates = {};
+            if (name !== undefined) updates.name = name;
+            // Only admins may change roles
+            if (role !== undefined) {
+                if (req.user.role !== 'Admin') {
+                    return res.status(403).json({ success: false, message: 'Only admins can change roles.' });
+                }
+                updates.role = role;
             }
-
-            const updatedUser = userModel.updateUser(id, updateData);
-            if (!updatedUser) {
-                return next(new NotFoundError('User not found'));
-            }
-
-            const { password, ...userWithoutPassword } = updatedUser;
-            res.status(200).json({
-                success: true,
-                message: 'User profile updated successfully',
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            next(error);
-        }
+            const user = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true }).select('-passwordHash');
+            if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+            res.status(200).json({ success: true, message: 'User profile updated successfully', data: user });
+        } catch (error) { next(error); }
     }
 
-    // ✅ Delete user (Admin only)
     async deleteUser(req, res, next) {
         try {
             const { id } = req.params;
-
-            // Prevent admin from deleting themselves
-            if (req.user.userId === id) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'You cannot delete your own account through this endpoint.'
-                });
+            const requesterId = String(req.user._id || req.user.id);
+            if (requesterId === String(id)) {
+                return res.status(400).json({ success: false, message: 'You cannot delete your own account through this endpoint.' });
             }
-
-            const deleted = userModel.deleteUser(id);
-            if (!deleted) {
-                return next(new NotFoundError('User not found'));
-            }
-
-            res.status(200).json({
-                success: true,
-                message: 'User deleted successfully'
-            });
-        } catch (error) {
-            next(error);
-        }
+            const deleted = await User.findByIdAndDelete(id);
+            if (!deleted) return res.status(404).json({ success: false, message: 'User not found' });
+            res.status(200).json({ success: true, message: 'User deleted successfully' });
+        } catch (error) { next(error); }
     }
 }
 

@@ -88,4 +88,22 @@ const validateLogin = [
 module.exports = {
   validateRegister,
   validateLogin,
+  validateUserUpdate: [
+    body('name')
+      .optional()
+      .trim()
+      .isLength({ min: 2, max: 50 }).withMessage('Name must be 2-50 characters')
+      .matches(/^[a-zA-Z\s'-]+$/).withMessage('Name contains invalid characters'),
+    body('role')
+      .optional()
+      .isIn(['Client', 'Freelancer', 'Admin'])
+      .withMessage('Role must be Client, Freelancer, or Admin'),
+    (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Validation failed', errors: formatErrors(errors) });
+      }
+      next();
+    },
+  ],
 };

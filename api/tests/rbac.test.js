@@ -3,7 +3,7 @@
  */
 
 // Mock logger before requiring middleware
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
@@ -11,11 +11,11 @@ jest.mock('../../utils/logger', () => ({
 }));
 
 // Mock User model to prevent DB connection attempts
-jest.mock('../../models/User', () => ({
+jest.mock('../models/User', () => ({
   findById: jest.fn(),
 }));
 
-const { authorizeRoles } = require('../../middleware/authMiddleware');
+const { authorizeRoles } = require('../middleware/authMiddleware');
 
 describe('RBAC authorizeRoles middleware', () => {
   let req, res, next;

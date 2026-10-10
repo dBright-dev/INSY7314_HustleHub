@@ -21,6 +21,7 @@ const validateUpdate = [
 
 router.post('/', authenticateToken, authorizeRoles('Freelancer'), validateCreate, gigController.createGig);
 router.get('/', gigController.getAllGigs);
+// NOTE: /my-gigs MUST come before /:id or Express treats "my-gigs" as an id
 router.get('/my-gigs', authenticateToken, authorizeRoles('Freelancer'), gigController.getMyGigs);
 router.get('/:id', gigController.getGigById);
 router.put('/:id', authenticateToken, authorizeRoles('Freelancer'), validateUpdate, gigController.updateGig);

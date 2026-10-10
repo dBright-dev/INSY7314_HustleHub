@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect: authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
 const { validateUserUpdate } = require('../middleware/validationMiddleware');
 
 /**

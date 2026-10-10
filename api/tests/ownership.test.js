@@ -1,9 +1,9 @@
-jest.mock('../../models/Gig', () => ({ findById: jest.fn() }));
+jest.mock('../models/Gig', () => ({ findById: jest.fn() }));
 
 const express = require('express');
 const request = require('supertest');
-const Gig = require('../../models/Gig');
-const gigController = require('../../controllers/gigController');
+const Gig = require('../models/Gig');
+const gigController = require('../controllers/gigController');
 
 const app = express();
 app.use(express.json());

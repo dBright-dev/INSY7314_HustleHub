@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:4000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 //needed for every protected request
 export const getToken = () => sessionStorage.getItem('token');
@@ -20,7 +20,7 @@ export const getSavedUser = () => {
     return user ? JSON.parse(user) : null;
 };
 
-export const apiRequest = async (Path2D, options = {}) => {
+export const apiRequest = async (path, options = {}) => {
     const token = getToken();
 
     const headers = {
@@ -32,15 +32,21 @@ export const apiRequest = async (Path2D, options = {}) => {
         headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_URL}${path}`, {
-        ...options,
-        headers,
-    });
+    let response;
+    try {
+        response = await fetch(`${API_URL}${path}`, {
+            ...options,
+            headers,
+        });
+    } catch (networkError) {
+        throw new Error(`Cannot reach the API at ${API_URL}${path}. Is the backend running on port 4000? (${networkError.message})`);
+    }
 
-    const data = await response.json().catch(() =>({}));
+    const data = await response.json().catch(() => ({}));
 
-    if(!response.ok) {
-        throw new Error(data.message || data.error || 'Request Failed');
+    if (!response.ok) {
+        const serverMessage = data.message || data.error || (Array.isArray(data.errors) ? data.errors.map((e) => e.message || e.msg).join(', ') : '');
+        throw new Error(serverMessage || `Request failed (${response.status})`);
     }
 
     return data;

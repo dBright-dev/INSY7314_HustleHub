@@ -2,14 +2,14 @@
  * Error Handler Middleware Tests
  */
 
-jest.mock('../../utils/logger', () => ({
+jest.mock('../utils/logger', () => ({
   error: jest.fn(),
   info: jest.fn(),
   warn: jest.fn(),
   debug: jest.fn(),
 }));
 
-const { errorHandler } = require('../../middleware/errorHandler');
+const { errorHandler } = require('../middleware/errorHandler');
 
 describe('Error Handler Middleware', () => {
   let req, res, next;

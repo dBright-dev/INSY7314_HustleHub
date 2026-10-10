@@ -2,8 +2,8 @@
  * Auth Controller Unit Tests
  */
 
-jest.mock('../../models/User');
-jest.mock('../../utils/logger', () => ({
+jest.mock('../models/User');
+jest.mock('../utils/logger', () => ({
   info: jest.fn(),
   warn: jest.fn(),
   error: jest.fn(),
@@ -12,8 +12,8 @@ jest.mock('../../utils/logger', () => ({
 
 process.env.JWT_SECRET = 'test_jwt_secret_at_least_32_characters_long';
 
-const User = require('../../models/User');
-const { register, login, generateToken } = require('../../controllers/authController');
+const User = require('../models/User');
+const { register, login, generateToken } = require('../controllers/authController');
 
 describe('Auth Controller', () => {
   let req, res, next;
