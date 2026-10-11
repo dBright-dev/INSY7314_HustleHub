@@ -1,4 +1,4 @@
-```markdown
+
 # HustleHub+ — Secure Freelance Marketplace (MERN)
 
 > **Video walkthrough:** https://youtu.be/5i6BAlv6qx0
@@ -326,7 +326,3 @@ With both servers running, register/login via the UI. Open DevTools → **Networ
 
 © The Independent Institute of Education (Pty) Ltd 2026
 ```
-
----
-
-Replace your `README.md` with the content above, commit it, and push. Your README will now be **professional, complete, and rubric-compliant**. 🚀
