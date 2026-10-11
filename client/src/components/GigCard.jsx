@@ -1,3 +1,5 @@
+//(OWASP, 2026)
+
 import Icon from './Icon';
 import { formatRand } from '../utils/format';
 
@@ -39,3 +41,9 @@ export default function GigCard({ gig, onBook, canBook = true, actions }) {
         </article>
     );
 }
+
+//REFERENCE
+
+/* OWASP, 2026. Cross Site Scripting Prevention Cheat Sheet. [Online] 
+Available at: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+[Accessed 10 October 2026]. */

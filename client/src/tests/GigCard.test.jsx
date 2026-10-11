@@ -1,3 +1,5 @@
+// (OWASP, 2026), (Testing Library, 2024), (Vitest, 2026)
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -46,3 +48,17 @@ describe('GigCard', () => {
         expect(screen.getByText('<img src=x onerror=alert(1)>')).toBeInTheDocument();
     });
 });
+
+//REFERENCE LIST
+
+/* OWASP, 2026. Cross Site Scripting Prevention Cheat Sheet. [Online] 
+Available at: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+[Accessed 10 October 2026].
+
+Testing Library, 2024. React Testing Library. [Online] 
+Available at: https://testing-library.com/docs/react-testing-library/intro/
+[Accessed 10 October 2026].
+
+Vitest, 2026. Getting Started. [Online] 
+Available at: https://vitest.dev/guide/
+[Accessed 10 October 2026]. */

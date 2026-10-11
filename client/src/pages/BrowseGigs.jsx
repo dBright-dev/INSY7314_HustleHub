@@ -1,3 +1,5 @@
+// (OWASP, 2026)
+
 import { useEffect, useMemo, useState } from 'react';
 import { apiRequest } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -177,3 +179,9 @@ export default function BrowseGigs() {
         </>
     );
 }
+
+//REFERENCE
+
+/* OWASP, 2026. Authorization Cheat Sheet. [Online] 
+Available at: https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html
+[Accessed 10 October 2026]. */

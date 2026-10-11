@@ -1,3 +1,5 @@
+//(Testing Library, 2024), (Vitest, 2026)
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -105,3 +107,13 @@ describe('GigForm', () => {
         expect(onCancel).toHaveBeenCalled();
     });
 });
+
+//REFERENCE LIST
+
+/* Testing Library, 2024. React Testing Library. [Online] 
+Available at: https://testing-library.com/docs/react-testing-library/intro/
+[Accessed 10 October 2026].
+
+Vitest, 2026. Getting Started. [Online] 
+Available at: https://vitest.dev/guide/
+[Accessed 10 October 2026]. */
