@@ -1,3 +1,5 @@
+//(Mozilla, 2025), (Testing Library, 2024), (Vitest, 2026)
+
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import IncomeSummary from '../pages/IncomeSummary';
@@ -57,3 +59,17 @@ describe('IncomeSummary', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent('Access denied');
     });
 });
+
+// REFERENCE LIST
+
+/* Mozilla, 2025. Number.prototype.toLocaleString(). [Online] 
+Available at: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+[Accessed 10 October 2026].
+
+Testing Library, 2024. React Testing Library. [Online] 
+Available at: https://testing-library.com/docs/react-testing-library/intro/
+[Accessed 10 October 2026].
+
+Vitest, 2026. Getting Started. [Online] 
+Available at: https://vitest.dev/guide/
+[Accessed 10 October 2026]. */
