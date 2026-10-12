@@ -218,6 +218,7 @@ VITE_API_URL=http://localhost:5000
 ### 9.1 Backend (Jest) — `api/tests/`
 
 **Suites:** `authController`, `validateAuthInput`, `passwordHash`, `jwt`, `gigValidation`, `bookingValidation`, `rbac`, `ownership`, `transactionLogic`, `userModel`, `errorHandler`.
+<img width="431" height="191" alt="image" src="https://github.com/user-attachments/assets/be4a44b2-4300-4cc1-9741-c5d0f976afa6" />
 
 ```powershell
 cd C:\Users\dorca\Documents\GitHub\INSY7314_Part1\api
