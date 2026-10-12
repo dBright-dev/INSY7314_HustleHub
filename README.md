@@ -98,9 +98,9 @@ INSY7314_Part1/
 
 **Base URL:** `http://localhost:4000`
 
-| Method | Path | Auth | Notes |
-|--------|------|------|-------|
-| GET | `/api/health` | No | Health check |
+| Method | Path | Auth | Notes | Screenshots |
+|--------|------|------|-------| ----------------------------- |
+| GET | `/api/health` | No | Health check | <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/7ab04002-7468-4f2a-85ef-14ccb878ce38" /> |
 | POST | `/api/auth/register` | No (`authLimiter`) | `{ name, email, password, role? }` → `201 { data: { user, token } }` |
 | POST | `/api/auth/login` | No (`authLimiter`) | `{ email, password }` → `200 { data: { user, token } }` |
 | GET | `/api/auth/me` | Bearer | Current user (no password hash) |
