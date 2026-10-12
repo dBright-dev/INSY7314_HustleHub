@@ -101,19 +101,19 @@ INSY7314_Part1/
 | Method | Path | Auth | Notes | Screenshots |
 |--------|------|------|-------| ----------------------------- |
 | GET | `/api/health` | No | Health check | <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/7ab04002-7468-4f2a-85ef-14ccb878ce38" /> |
-| POST | `/api/auth/register` | No (`authLimiter`) | `{ name, email, password, role? }` → `201 { data: { user, token } }` |
-| POST | `/api/auth/login` | No (`authLimiter`) | `{ email, password }` → `200 { data: { user, token } }` |
-| GET | `/api/auth/me` | Bearer | Current user (no password hash) |
-| POST | `/api/gigs` | Freelancer | Create gig |
-| GET | `/api/gigs` | No | List `available` gigs |
-| GET | `/api/gigs/my-gigs` | Freelancer | Own gigs (must precede `/:id`) |
-| GET | `/api/gigs/:id` | No | Single available gig |
-| PUT | `/api/gigs/:id` | Freelancer + owner | Edit own gig only |
-| DELETE | `/api/gigs/:id` | Freelancer + owner | Delete own gig only |
-| POST | `/api/bookings` | Client (`bookingLimiter`) | `{ gig }`; rejects self-booking; atomic Booking + Transaction |
-| GET | `/api/bookings/my-bookings` | Client | Own bookings |
-| GET | `/api/bookings/incoming` | Freelancer | Bookings for own gigs |
-| GET | `/api/bookings/income` | Freelancer | Also at `/api/transactions/income`; `{ data: { total, transactions } }` |
+| POST | `/api/auth/register` | No (`authLimiter`) | `{ name, email, password, role? }` → `201 { data: { user, token } }` | <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/7766e0da-20a0-4b5f-9443-0c9161c2fa3c" /> |
+| POST | `/api/auth/login` | No (`authLimiter`) | `{ email, password }` → `200 { data: { user, token } }` |<img width="990" height="702" alt="image" src="https://github.com/user-attachments/assets/d4809ddc-a2d5-42aa-8170-e634e020a3f2" /> | <img width="984" height="685" alt="image" src="https://github.com/user-attachments/assets/bbbece1f-078c-4f0a-b0e5-d94e624fb0fc" /> | <img width="986" height="712" alt="image" src="https://github.com/user-attachments/assets/63c642ec-0ac6-4749-9280-ccd96846604f" /> | <img width="983" height="688" alt="image" src="https://github.com/user-attachments/assets/f696b513-579b-45ed-8ea0-03aa927a8685" /> | <img width="985" height="589" alt="image" src="https://github.com/user-attachments/assets/0c143155-5172-4ff1-9f13-5b7d45bbba09" /> | <img width="981" height="579" alt="image" src="https://github.com/user-attachments/assets/55808ab3-4d60-4868-89ad-147fcc77ca43" /> | <img width="986" height="583" alt="image" src="https://github.com/user-attachments/assets/95f9bee8-a384-4bd3-803a-a651eeffa4ef" /> | <img width="1004" height="678" alt="image" src="https://github.com/user-attachments/assets/e47cd195-104c-4675-b892-0b734be39fa0" />
+| GET | `/api/auth/me` | Bearer | Current user (no password hash) | <img width="984" height="652" alt="image" src="https://github.com/user-attachments/assets/487aae2f-c439-4ad5-8ef3-a907c9cfc708" /> |
+| POST | `/api/gigs` | Freelancer | Create gig | <img width="992" height="687" alt="image" src="https://github.com/user-attachments/assets/31e5a9cc-eb87-4947-88dc-b810fa855b0b" /> |
+| GET | `/api/gigs` | Yes | List `available` gigs | <img width="997" height="694" alt="image" src="https://github.com/user-attachments/assets/17b3fb27-b2ff-43e8-82b9-120d59b12099" /> |
+| GET | `/api/gigs/my-gigs` | Freelancer | Own gigs (must precede `/:id`) |<img width="998" height="686" alt="image" src="https://github.com/user-attachments/assets/99573289-6f15-4e8b-b2e9-0037ca9e344e" /> |
+| GET | `/api/gigs/:id` | Yes | Single available gig | <img width="982" height="704" alt="image" src="https://github.com/user-attachments/assets/da9a88fd-cc45-4c3e-b470-ebc6538e10aa" /> |
+| PUT | `/api/gigs/:id` | Freelancer + owner | Edit own gig only | <img width="1197" height="711" alt="image" src="https://github.com/user-attachments/assets/e811f70c-feb5-4842-bb25-dfb5faf9e908" /> |
+| DELETE | `/api/gigs/:id` | Freelancer + owner | Delete own gig only | <img width="1208" height="600" alt="image" src="https://github.com/user-attachments/assets/0e09773c-12a6-45d0-8e41-aa6b2c0d8885" /> |
+| POST | `/api/bookings` | Client | `{ gig }`| <img width="1195" height="696" alt="image" src="https://github.com/user-attachments/assets/8f4b758a-4d56-41ae-a606-88752ba3d11b" /> |
+| GET | `/api/bookings/my-bookings` | Client | Own bookings | <img width="1197" height="701" alt="image" src="https://github.com/user-attachments/assets/a8a4105d-00e6-456d-9f9a-190dc678e9a2" /> |
+| GET | `/api/bookings/incoming` | Freelancer | Bookings for own gigs | <img width="1196" height="668" alt="image" src="https://github.com/user-attachments/assets/e56cf4f7-b3aa-4039-b2ab-60bc4d665fc6" /> |
+| GET | `/api/bookings/income` | Freelancer | Also at `/api/transactions/income`; `{ data: { total, transactions } }` | <img width="1192" height="698" alt="image" src="https://github.com/user-attachments/assets/40a032b6-149a-4cbb-ab14-f178398189ae" /> |
 | GET | `/api/users` | Admin | List users |
 | GET/PUT | `/api/users/:id` | Self / Admin | Read / update profile |
 | DELETE | `/api/users/:id` | Admin | Delete user |
