@@ -212,6 +212,20 @@ VITE_API_URL=http://localhost:5000
 > 🔒 **Never commit** `api/.env` or `client/.env` to GitHub. Ensure both are in `.gitignore`.
 
 ---
+## 8.1 Application Screenshots
+
+| Screen | Preview |
+|---------|---------|
+| Login | <img width="400" height="487" alt="Login" src="https://github.com/user-attachments/assets/e306549a-7d04-4254-a50f-9ff476e2e21c" /> |
+| Register | <img width="400" height="686" alt="Register" src="https://github.com/user-attachments/assets/4ebccf79-a290-455e-8ac7-d4ad902dfe16" /> |
+| Client Dashboard | <img width="877" height="400" alt="Client Dashboard" src="https://github.com/user-attachments/assets/748a8ed3-3728-45aa-8a09-096456e3b23f" /> |
+| My Booking Client | <img width="877" height="872" alt="My Booking Client" src="https://github.com/user-attachments/assets/a0af6a91-8691-4613-942d-874303f76c4c" /> |
+| Discover Gigs - Client | <img width="877" height="873" alt="Discover Gigs Client" src="https://github.com/user-attachments/assets/6662e591-1ed0-4cf7-828e-de90fcea99ae" /> |
+| Freelancer Dashboard | <img width="877" height="879" alt="Freelancer Dashboard" src="https://github.com/user-attachments/assets/7211653d-c22f-4290-a8da-e7e987b9e879" /> |
+| Gigs Page | <img width="877" height="863" alt="Gigs Page" src="https://github.com/user-attachments/assets/ba928ff1-56d7-4bae-a669-e6e020338d2e" /> |
+| Create Gigs | <img width="877" height="571" alt="Create Gigs" src="https://github.com/user-attachments/assets/1dbcecf2-c04b-4e48-91fa-9ec8896a4d3c" /> |
+| Bookings - Freelancer | <img width="877" height="864" alt="Bookings Freelancer" src="https://github.com/user-attachments/assets/ee980a90-4af3-4ea9-85bf-4e8bfd682349" /> |
+| Earnings/Transactions | <img width="877" height="867" alt="Earnings Transactions" src="https://github.com/user-attachments/assets/54d7acb4-dfc5-47be-a572-c2ecd1e71e90" /> |
 
 ## 9. Testing Procedures
 
@@ -280,8 +294,8 @@ With both servers running, register/login via the UI. Open DevTools → **Networ
 
 | Symptom | Cause / Fix |
 |---------|-------------|
-| `Failed to fetch` on Login/Register | Backend down, or `.env` points at `https://localhost:4000`. Use `http://localhost:4000`, restart `npm run dev`, confirm `/api/health` |
-| `EADDRINUSE :::4000` | Server already on 4000 — reuse it or kill the old process |
+| `Failed to fetch` on Login/Register | Backend down, or `.env` points at `https://localhost:5000`. Use `http://localhost:5000`, restart `npm run dev`, confirm `/api/health` |
+| `EADDRINUSE :::5000` | Server already on 5000 — reuse it or kill the old process |
 | Register hangs / Mongo timeout | `MONGO_URI` malformed (`mongodb+srv://...`) or Atlas IP not allowlisted |
 | `401 No token provided` | Missing `Authorization: Bearer <token>` — log in again |
 | `403 Role ... not authorized` | Correct behaviour — that role may not call that route |
