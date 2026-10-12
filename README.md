@@ -248,6 +248,7 @@ cd C:\Users\dorca\Documents\GitHub\INSY7314_Part1\client
 npm test                 # vitest run (jsdom)
 npm run lint             # oxlint
 ```
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/3abb50cd-7c45-42b3-ae9a-46e9004db7d0" />
 
 ### 9.3 Manual / Postman Smoke Test
 
