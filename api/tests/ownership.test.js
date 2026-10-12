@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: resource-owner-only modification checks follow the INSY7314
+ *   authorisation guidance (ownership before RBAC) (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 jest.mock('../models/Gig', () => ({ findById: jest.fn() }));
 
 const express = require('express');

@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: registration with role selection and password confirmation
+ *   follows the INSY7314 registration requirements (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import RegisterForm from '../components/RegisterForm';

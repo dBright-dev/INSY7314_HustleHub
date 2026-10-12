@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: gig card rendering of title, price and category follows the
+ *   INSY7314 marketplace presentation requirements (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 // (OWASP, 2026), (Testing Library, 2024), (Vitest, 2026)
 
 import { render, screen } from '@testing-library/react';

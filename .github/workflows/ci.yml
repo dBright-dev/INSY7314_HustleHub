@@ -103,6 +103,13 @@ jobs:
       run:
         working-directory: api
 
+    # MongoDB REPLICA SET is required: booking creation uses a Mongoose
+    # session/transaction (startSession + withTransaction), which a
+    # standalone mongod rejects with "Transaction numbers are only allowed
+    # on a replica set member or mongos". GitHub Actions service containers
+    # cannot pass --replSet to mongod, so we start it via docker directly
+    # and initiate a single-node replica set bound to 127.0.0.1.
+
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -117,6 +124,13 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      - name: 🗃️ Start MongoDB (single-node replica set)
+        run: |
+          docker run -d --name mongo-ci -p 27017:27017 mongo:7 --replSet rs0
+          sleep 5
+          docker exec mongo-ci mongosh --quiet --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "127.0.0.1:27017"}]})'
+          sleep 5
+
       - name: 🔐 Create .env for CI
         run: |
           cat > .env << 'EOF'
@@ -124,6 +138,7 @@ jobs:
           NODE_ENV=test
           JWT_SECRET=ci-test-secret-key-min-32-characters-long
           JWT_EXPIRES_IN=1h
+          MONGO_URI=mongodb://127.0.0.1:27017/hustlehub_ci?directConnection=true
           USE_HTTPS=false
           EOF
 
@@ -131,7 +146,7 @@ jobs:
         run: |
           node server.js > server.log 2>&1 &
           echo $! > server.pid
-          npx wait-on http://localhost:4000/api/health -t 30000 || (cat server.log && exit 1)
+          npx wait-on http://localhost:4000/api/health -t 60000 || (cat server.log && exit 1)
 
       - name: 🧪 Run Newman collection
         run: npm run test:api

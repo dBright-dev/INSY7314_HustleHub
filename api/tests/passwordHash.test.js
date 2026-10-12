@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: bcrypt salt/round behaviour tested here follows the INSY7314
+ *   password-storage guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 /*
  * Password Hashing Unit Tests
  */

@@ -1,3 +1,14 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: Client-only booking creation with rate limiting and gig-ID
+ *   validation, plus Freelancer-only incoming/income views, follow the
+ *   INSY7314 RBAC and transactional-booking guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();

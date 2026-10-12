@@ -1,3 +1,14 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: role-based route protection (Freelancer-only CRUD, public read)
+ *   and field-level express-validator chains follow the INSY7314 secure
+ *   routing guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();

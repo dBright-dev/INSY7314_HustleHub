@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: gig browsing, filtering and empty-state UI mirror the INSY7314
+ *   marketplace feature requirements (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 //(Testing Library, 2024), (Vitest, 2026)
 
 import { render, screen, waitFor } from '@testing-library/react';
