@@ -85,45 +85,54 @@ The backend follows a **modular, layered architecture** to ensure separation of 
 ```
 api/
 ├── config/
-│   └── index.js          # Environment configuration (loads .env)
+│   └── db.js                    # MongoDB Atlas connection (Mongoose)
 ├── controllers/
-│   ├── authController.js    # Authentication logic (register, login, profile)
-│   └── userController.js    # User CRUD operations (admin only)
+│   ├── authController.js        # Authentication logic (register, login, profile)
+│   └── userController.js        # User CRUD operations (admin only)
 ├── middleware/
-│   ├── authMiddleware.js    # JWT verification & RBAC
-│   ├── errorHandler.js      # Centralised error handling (safe responses)
-│   └── validationMiddleware.js # express-validator rules
+│   ├── authMiddleware.js        # JWT verification (protect) + RBAC (authorizeRoles)
+│   ├── errorHandler.js          # Centralised error handling (no stack traces in prod)
+│   ├── validationMiddleware.js  # express-validator rules for auth endpoints
+│   ├── rateLimiter.js           # Rate limiting (authLimiter, apiLimiter, bookingLimiter)
+│   └── requestLogger.js         # Request audit logging (AAA - Accounting)
 ├── models/
-│   └── userModel.js         # User data management (in-memory + file)
+│   └── User.js                  # Mongoose User schema (name, email, passwordHash, role)
 ├── routes/
-│   ├── authRoutes.js        # Authentication endpoints
-│   └── userRoutes.js        # User management endpoints
+│   └── authRoutes.js            # Authentication endpoints
 ├── utils/
-│   └── validators.js        # Custom validation & sanitisation helpers
+│   └── logger.js                # Centralised logger utility
+├── tests/
+│   └── postman/
+│       ├── passwordHash.test.js      # bcrypt hashing/verification tests
+│       ├── jwt.test.js               # JWT sign/verify/expiry tests
+│       ├── rbac.test.js              # authorizeRoles middleware tests
+│       ├── validateAuthInput.test.js # Input validation tests
+│       ├── authController.test.js    # Controller unit tests (mocked Mongoose)
+│       ├── userModel.test.js         # User schema validation tests
+│       └── errorHandler.test.js      # Error handler status code tests
 ├── certs/
-│   ├── server.key           # SSL private key (self-signed)
-│   └── server.crt           # SSL certificate (self-signed)
-├── data/
-│   └── users.json           # Persistent user storage (file-based)
-├── postman/             # Postman collection for testing
-├── .env                     # Environment variables (NOT committed)
-├── .gitignore               # Excludes secrets, certs, dependencies
-├── package.json             # Dependencies & scripts
-└── server.js                # Main entry point (HTTPS server)
+│   ├── server.key               # SSL private key (self-signed)
+│   └── server.crt               # SSL certificate (self-signed)
+├── postman/                     # Postman collection for API testing
+├── .env                         # Environment variables (NOT committed)
+├── .env.example                 # Template for environment variables
+├── .gitignore                   # Excludes secrets, certs, dependencies
+├── package.json                 # Dependencies & scripts (Jest config included)
+└── server.js                    # Main entry point (HTTPS server)
 ```
 
 ### Folder Responsibilities
 
-| Folder | Responsibility |
-|--------|----------------|
-| **config/** | Centralised configuration management; loads environment variables |
-| **controllers/** | Contains business logic for each route; processes requests and returns responses |
-| **middleware/** | Reusable request-processing functions (authentication, validation, error handling) |
-| **models/** | Data layer; currently uses in-memory + file-based storage (will be replaced with MongoDB) |
-| **routes/** | Defines API endpoints and maps them to controller functions |
-| **utils/** | Helper functions (validation, sanitisation, utilities) |
-| **certs/** | SSL/TLS certificates for HTTPS (self-signed for local development) |
-| **data/** | Persistent JSON storage for user data |
+Folder	Responsibility
+config/	Centralised configuration; db.js handles MongoDB Atlas connection with fail-fast timeout
+controllers/	Business logic for each route; processes requests, validates data, returns JSON responses
+middleware/	Reusable request-processing functions: JWT verification, RBAC, validation, rate limiting, error handling, and audit logging
+models/	Mongoose schemas defining data structure, validation rules, and instance methods (e.g., matchPassword)
+routes/	Defines API endpoints and maps them to controller functions; applies middleware chains
+utils/	Centralised logger (info, warn, error, debug) with timestamps for audit trails
+tests/	Jest unit tests for Section 1 (authentication, security infrastructure)
+certs/	SSL/TLS certificates for HTTPS (self-signed for local development)
+postman/	Postman/Newman collection for API integration testing 
 
 ---
 
