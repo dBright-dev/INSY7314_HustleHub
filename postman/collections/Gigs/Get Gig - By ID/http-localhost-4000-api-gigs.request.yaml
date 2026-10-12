@@ -1,0 +1,12 @@
+$kind: http-request
+name: http://localhost:4000/api/gigs
+description: ""
+url: http://localhost:4000/api/gigs/:6acccefef44b87342e75fa11
+method: GET
+pathVariables:
+  6acccefef44b87342e75fa11: 6acccefef44b87342e75fa11
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_078g}}"
+order: 1000
