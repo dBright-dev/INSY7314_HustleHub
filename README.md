@@ -123,16 +123,17 @@ api/
 
 ### Folder Responsibilities
 
-Folder	Responsibility
-config/	Centralised configuration; db.js handles MongoDB Atlas connection with fail-fast timeout
-controllers/	Business logic for each route; processes requests, validates data, returns JSON responses
-middleware/	Reusable request-processing functions: JWT verification, RBAC, validation, rate limiting, error handling, and audit logging
-models/	Mongoose schemas defining data structure, validation rules, and instance methods (e.g., matchPassword)
-routes/	Defines API endpoints and maps them to controller functions; applies middleware chains
-utils/	Centralised logger (info, warn, error, debug) with timestamps for audit trails
-tests/	Jest unit tests for Section 1 (authentication, security infrastructure)
-certs/	SSL/TLS certificates for HTTPS (self-signed for local development)
-postman/	Postman/Newman collection for API integration testing 
+| Folder | Responsibility |
+|--------|----------------|
+| `config/` | Centralised configuration; `db.js` handles MongoDB Atlas connection with fail-fast timeout |
+| `controllers/` | Business logic for each route; processes requests, validates data, returns JSON responses |
+| `middleware/` | Reusable request-processing functions: JWT verification, RBAC, validation, rate limiting, error handling, and audit logging |
+| `models/` | Mongoose schemas defining data structure, validation rules, and instance methods (e.g., `matchPassword`) |
+| `routes/` | Defines API endpoints and maps them to controller functions; applies middleware chains |
+| `utils/` | Centralised logger (info, warn, error, debug) with timestamps for audit trails |
+| `tests/` | Jest unit tests for Section 1 (authentication, security infrastructure) |
+| `certs/` | SSL/TLS certificates for HTTPS (self-signed for local development) |
+| `postman/` | Postman/Newman collection for API integration testing |
 
 ---
 
