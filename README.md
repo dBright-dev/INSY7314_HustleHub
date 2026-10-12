@@ -1,7 +1,7 @@
 
 # HustleHub+ — Secure Freelance Marketplace (MERN)
 
-> **Video walkthrough:** https://youtu.be/5i6BAlv6qx0
+> **Video walkthrough:** https://youtu.be/4gdpsoVRy_g
 
 HustleHub+ is a full-stack **MERN** freelance marketplace connecting **Clients** (hire talent) with **Freelancers** (offer gigs), plus **Admin** oversight. This README documents the **expanded system**: JWT authentication, gig CRUD, bookings with atomic payment records, freelancer income summaries, a React frontend, and defence-in-depth security.
 
@@ -114,10 +114,6 @@ INSY7314_Part1/
 | GET | `/api/bookings/my-bookings` | Client | Own bookings | <img width="1197" height="701" alt="image" src="https://github.com/user-attachments/assets/a8a4105d-00e6-456d-9f9a-190dc678e9a2" /> |
 | GET | `/api/bookings/incoming` | Freelancer | Bookings for own gigs | <img width="1196" height="668" alt="image" src="https://github.com/user-attachments/assets/e56cf4f7-b3aa-4039-b2ab-60bc4d665fc6" /> |
 | GET | `/api/bookings/income` | Freelancer | Also at `/api/transactions/income`; `{ data: { total, transactions } }` | <img width="1192" height="698" alt="image" src="https://github.com/user-attachments/assets/40a032b6-149a-4cbb-ab14-f178398189ae" /> |
-| GET | `/api/users` | Admin | List users |
-| GET/PUT | `/api/users/:id` | Self / Admin | Read / update profile |
-| DELETE | `/api/users/:id` | Admin | Delete user |
-
 **Error format:**
 
 ```json
@@ -162,7 +158,7 @@ npm start      # plain node server.js — production-like
 
 **Verify:** `http://localhost:4000/api/health` should return `{ "success": true, ... }`.
 
-> **Port busy?** If you see `EADDRINUSE :::4000`, a server is already running — reuse it.
+> **Port busy?** If you see `EADDRINUSE :::5000`, a server is already running — reuse it.
 
 ---
 
@@ -194,11 +190,11 @@ npm run preview    # serves the built bundle locally
 ### Backend — `api/.env`
 
 ```env
-PORT=4000
+PORT=5000
 NODE_ENV=development
 JWT_SECRET=<long-random-secret>
 JWT_EXPIRY=7d
-MONGO_URI=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/hustlehub?appName=HustleHub
+MONGO_URI=mongodb+srv://hustlehubuser:cdlQc2Zo3ciB1Q8E@hustlehub.zkras1a.mongodb.net/hustlehub?appName=HustleHub
 FRONTEND_URL=http://localhost:5173
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
@@ -208,10 +204,10 @@ LOG_LEVEL=info
 ### Frontend — `client/.env`
 
 ```env
-VITE_API_URL=http://localhost:4000
+VITE_API_URL=http://localhost:5000
 ```
 
-> ⚠️ **Local development uses HTTP.** Do **NOT** set `VITE_API_URL=https://localhost:4000` — HTTPS-against-HTTP is the #1 cause of `Failed to fetch` on Login/Register.
+> ⚠️ **Local development uses HTTP.** Do **NOT** set `VITE_API_URL=https://localhost:5000` — HTTPS-against-HTTP is the #1 cause of `Failed to fetch` on Login/Register.
 
 > 🔒 **Never commit** `api/.env` or `client/.env` to GitHub. Ensure both are in `.gitignore`.
 
