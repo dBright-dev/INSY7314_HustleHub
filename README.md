@@ -218,7 +218,7 @@ VITE_API_URL=http://localhost:5000
 ### 9.1 Backend (Jest) — `api/tests/`
 
 **Suites:** `authController`, `validateAuthInput`, `passwordHash`, `jwt`, `gigValidation`, `bookingValidation`, `rbac`, `ownership`, `transactionLogic`, `userModel`, `errorHandler`.
-<img width="431" height="191" alt="image" src="https://github.com/user-attachments/assets/be4a44b2-4300-4cc1-9741-c5d0f976afa6" />
+
 
 ```powershell
 cd C:\Users\dorca\Documents\GitHub\INSY7314_Part1\api
@@ -226,6 +226,8 @@ npm test                 # jest --detectOpenHandles --forceExit
 npm run test:coverage    # coverage of controllers/middleware/models/utils
 npm run test:watch       # watch mode
 ```
+
+<img width="431" height="191" alt="image" src="https://github.com/user-attachments/assets/0f01a401-d7eb-45f2-80c8-f1095f48e53c" />
 
 **Covered:**
 - Register/login happy paths + duplicate/invalid cases
