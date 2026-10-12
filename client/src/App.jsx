@@ -6,9 +6,11 @@ import Sidebar from './components/Sidebar';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './pages/Dashboard';
-
-// Placeholder pages for other members to build:
-const Placeholder = ({ title }) => <h1 style={{ padding: 40 }}>{title}</h1>;
+import BrowseGigs from './pages/BrowseGigs';
+import MyGigs from './pages/MyGigs';
+import MyBookings from './pages/MyBookings';
+import IncomeSummary from './pages/IncomeSummary';
+import Profile from './pages/Profile';
 
 export default function App() {
     return (
@@ -23,14 +25,16 @@ export default function App() {
                     <Route element={<ProtectedRoute />}>
                         <Route element={<AppShell />}>
                             <Route path="/dashboard" element={<Dashboard />} />
-
-                            {/* Member 4 will replace these placeholders */}
-                            <Route path="/browse-gigs" element={<Placeholder title="Browse Gigs" />} />
-                            <Route path="/my-gigs" element={<Placeholder title="My Gigs" />} />
-                            <Route path="/my-bookings" element={<Placeholder title="My Bookings" />} />
-                            <Route path="/incoming-bookings" element={<Placeholder title="Incoming Bookings" />} />
-                            <Route path="/income" element={<Placeholder title="Income" />} />
-                            <Route path="/profile" element={<Placeholder title="Profile" />} />
+                            <Route path="/browse-gigs" element={<BrowseGigs />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route element={<ProtectedRoute allowedRoles={['Client']} />}>
+                                <Route path="/my-bookings" element={<MyBookings />} />
+                            </Route>
+                            <Route element={<ProtectedRoute allowedRoles={['Freelancer']} />}>
+                                <Route path="/my-gigs" element={<MyGigs />} />
+                                <Route path="/incoming-bookings" element={<MyBookings />} />
+                                <Route path="/income" element={<IncomeSummary />} />
+                            </Route>
                         </Route>
                     </Route>
 

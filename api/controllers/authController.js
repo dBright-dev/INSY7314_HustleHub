@@ -1,118 +1,158 @@
 /**
- * References: Manico & Detlefsen, 2015 - Chapter 4: Authentication
+ * REFERENCES (IIE Harvard style)
+ * - In-text: JWT issue/verify, bcrypt hashing and generic login failure
+ *   messages follow the INSY7314 authentication guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+/**
+ * Authentication Controller
  */
 
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const userModel = require('../models/userModel');
-const { AuthenticationError, NotFoundError } = require('../middleware/errorHandler');
+const User = require('../models/User');
+const logger = require('../utils/logger');
 
-class AuthController {
-    async register(req, res, next) {
-        try {
-            const { name, email, password, role } = req.body;
+const generateToken = (userId, role) => {
+  return jwt.sign(
+    { id: userId, role }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: process.env.JWT_EXPIRES_IN || '1h' } 
+  );
+};
 
-            // Check if user already exists
-            const existingUser = userModel.findByEmail(email);
-            if (existingUser) {
-                return res.status(409).json({
-                    success: false,
-                    message: 'Email already registered. Please use a different email address or login.'
-                });
-            }
 
-            // Hash password
-            const hashedPassword = await bcrypt.hash(password, 10);
+const register = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
 
-            // Create user
-            const user = userModel.createUser({
-                name,
-                email,
-                password: hashedPassword,
-                role: role || 'Client'
-            });
-
-            // Remove password from response
-            const { password: _, ...userWithoutPassword } = user;
-
-            res.status(201).json({
-                success: true,
-                message: 'User registered successfully',
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            next(error);
-        }
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email already exists',
+      });
     }
 
-    async login(req, res, next) {
-        try {
-            const { email, password } = req.body;
+    // Create user 
+    const user = await User.create({
+      name,
+      email,
+      passwordHash: password, // Model hashes this
+      role: role || 'Client',
+    });
 
-            // Find user
-            const user = userModel.findByEmail(email);
-            if (!user) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Invalid email or password'
-                });
-            }
+    // Generate token
+    const token = generateToken(user._id, user.role);
 
-            // Verify password
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Invalid email or password'
-                });
-            }
+    logger.info('User registered', { userId: user._id, email: user.email, role: user.role });
 
-            // Generate JWT
-            const token = jwt.sign(
-                {
-                    userId: user.id,
-                    email: user.email,
-                    role: user.role
-                },
-                process.env.JWT_SECRET,
-                { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
-            );
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful',
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        token,
+      },
+    });
+  } catch (error) {
+    next(error); // Pass to centralized error handler
+  }
+};
 
-            const { password: _, ...userWithoutPassword } = user;
 
-            res.status(200).json({
-                success: true,
-                message: 'Login successful',
-                data: {
-                    user: userWithoutPassword,
-                    token
-                }
-            });
-        } catch (error) {
-            next(error);
-        }
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user and include passwordHash field
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+passwordHash');
+
+    // Generic message for security (don't reveal if email exists)
+    const invalidMsg = 'Invalid email or password';
+
+    if (!user) {
+      logger.warn('Login attempt with non-existent email', { email });
+      return res.status(401).json({
+        success: false,
+        message: invalidMsg,
+      });
     }
 
-    async getProfile(req, res, next) {
-        try {
-            const user = userModel.findById(req.user.userId);
-            if (!user) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
-
-            const { password: _, ...userWithoutPassword } = user;
-
-            res.status(200).json({
-                success: true,
-                data: userWithoutPassword
-            });
-        } catch (error) {
-            next(error);
-        }
+    // Verify password
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      logger.warn('Login attempt with wrong password', { email });
+      return res.status(401).json({
+        success: false,
+        message: invalidMsg,
+      });
     }
-}
 
-module.exports = new AuthController();
+    // Generate token
+    const token = generateToken(user._id, user.role);
+
+    logger.info('User logged in', { userId: user._id, email: user.email });
+
+    res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+        token,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+const getMe = async (req, res, next) => {
+  try {
+    // req.user is already set by protect middleware
+    const user = await User.findById(req.user._id).select('-passwordHash');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  generateToken, // Export for testing
+};

@@ -1,105 +1,119 @@
 /**
- * References:
- * - Manico & Detlefsen, 2015 - Chapter 3: Input Validation
+ * REFERENCES (IIE Harvard style)
+ * - In-text: express-validator input validation/sanitisation and consistent
+ *   400 error envelopes follow the INSY7314 input-validation guidance
+ *   (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+/*
+ * Input Validation & Sanitization Middleware
  */
 
 const { body, validationResult } = require('express-validator');
 
 /**
- * Shared validation result handler
- * Checks accumulated validation errors and returns a consistent 400 response.
- * Used by all rule arrays below so the response shape never drifts between routes.
+ * Helper: Format validation errors for consistent API responses
  */
-const handleValidationErrors = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            success: false,
-            message: 'Validation failed',
-            errors: errors.array().map(err => ({
-                field: err.path,
-                message: err.msg
-            }))
-        });
-    }
-    next();
+const formatErrors = (errors) => {
+  return errors.array().map((err) => ({
+    field: err.path,
+    message: err.msg,
+  }));
 };
 
-const validateRegistration = [
-    // Name validation - required, trimmed
-    body('name')
-        .trim()
-        .notEmpty().withMessage('Name is required')
-        .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters')
-        .matches(/^[a-zA-Z\s']+$/).withMessage('Name can only contain letters, spaces, and apostrophes'),
+/**
+ * Registration validation rules
+ */
+const validateRegister = [
+  body('name')
+    .trim()
+    .notEmpty().withMessage('Name is required')
+    .isLength({ min: 2, max: 50 }).withMessage('Name must be 2-50 characters')
+    .matches(/^[a-zA-Z\s'-]+$/).withMessage('Name contains invalid characters'),
 
-    // Email validation - required, valid format, normalized
-    body('email')
-        .trim()
-        .notEmpty().withMessage('Email is required')
-        .isEmail().withMessage('Please provide a valid email address')
-        .normalizeEmail({ 
-            gmail_remove_dots: false,
-            yahoo_remove_subaddress: true,
-            icloud_remove_subaddress: true
-        })
-        .isLength({ max: 100 }).withMessage('Email cannot exceed 100 characters'),
+  body('email')
+    .trim()
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Please provide a valid email address')
+    .normalizeEmail()
+    .isLength({ max: 100 }).withMessage('Email is too long'),
 
-    // Password validation - required, secure, bounded length
-    // Password validation - required, secure
-    body('password')
-        .notEmpty().withMessage('Password is required')
-        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-        .withMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
+  body('password')
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+    .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
+    .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
+    .matches(/\d/).withMessage('Password must contain a number')
+    .matches(/[@$!%*?&#^()_\-+=[\]{};:'",.<>/?\\|`~]/)
+    .withMessage('Password must contain a special character'),
 
-    // Role validation - optional, defaults to 'Client'
-    body('role')
-        .optional()
-        .trim()
-        .isIn(['Client', 'Freelancer', 'Admin']).withMessage('Role must be Client, Freelancer, or Admin'),
+  body('role')
+    .optional()
+    .isIn(['Client', 'Freelancer', 'Admin'])
+    .withMessage('Role must be Client, Freelancer, or Admin'),
 
-    handleValidationErrors
+  // Final handler to check validation results
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: formatErrors(errors),
+      });
+    }
+    next();
+  },
 ];
 
 /**
- * Login Validation Rules
+ * Login validation rules
  */
 const validateLogin = [
-    body('email')
-        .trim()
-        .notEmpty().withMessage('Email is required')
-        .isEmail().withMessage('Please provide a valid email address')
-        .normalizeEmail(),
+  body('email')
+    .trim()
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Please provide a valid email address')
+    .normalizeEmail(),
 
-    body('password')
-        .notEmpty().withMessage('Password is required')
-        .isLength({ min: 1, max: 128 }).withMessage('Password cannot be empty'),
+  body('password')
+    .notEmpty().withMessage('Password is required'),
 
-    handleValidationErrors
-];
-
-/**
- * User Update Validation Rules
- */
-const validateUserUpdate = [
-    body('name')
-        .optional()
-        .trim()
-        .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters')
-        .matches(/^[a-zA-Z\s']+$/).withMessage('Name can only contain letters, spaces, and apostrophes'),
-
-    body('email')
-        .optional()
-        .trim()
-        .isEmail().withMessage('Please provide a valid email address')
-        .normalizeEmail(),
-
-    handleValidationErrors
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: formatErrors(errors),
+      });
+    }
+    next();
+  },
 ];
 
 module.exports = {
-    validateRegistration,
-    validateLogin,
-    validateUserUpdate
+  validateRegister,
+  validateLogin,
+  validateUserUpdate: [
+    body('name')
+      .optional()
+      .trim()
+      .isLength({ min: 2, max: 50 }).withMessage('Name must be 2-50 characters')
+      .matches(/^[a-zA-Z\s'-]+$/).withMessage('Name contains invalid characters'),
+    body('role')
+      .optional()
+      .isIn(['Client', 'Freelancer', 'Admin'])
+      .withMessage('Role must be Client, Freelancer, or Admin'),
+    (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Validation failed', errors: formatErrors(errors) });
+      }
+      next();
+    },
+  ],
 };

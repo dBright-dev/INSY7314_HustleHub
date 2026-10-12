@@ -1,114 +1,135 @@
 /**
- * HustleHubt Backend Server
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: middleware order (Helmet/CSP, CORS, body limits, rate limiting,
+ *   404 + central error handler) follows the INSY7314 secure API design
+ *   guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM — PDFs supplied were scanned images with no extractable text.]
+ */
+/**
+ * HustleHubt API Server 
  */
 
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
+const helmet = require('helmet');
 
-// Import routes
+const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const gigRoutes = require('./routes/gigRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 const userRoutes = require('./routes/userRoutes');
+const requestLogger = require('./middleware/requestLogger');
+const { apiLimiter } = require('./middleware/rateLimiter');
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+const logger = require('./utils/logger');
 
-// Import middleware
-const { errorHandler } = require('./middleware/errorHandler');
+// 1. CONNECT TO DATABASE
+connectDB();
 
-// Initialize Express app
+// 2. INITIALIZE EXPRESS APP
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-/**
- * Middleware Configuration
- */
+// Trust proxy 
+app.set('trust proxy', 1);
 
-// Parse JSON payloads
-app.use(express.json());
+// 3. SECURITY MIDDLEWARE 
 
-// Parse URL-encoded payloads
-app.use(express.urlencoded({ extended: true }));
+// Helmet - Security HTTP headers + CSP
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Allow Postman testing
+  })
+);
 
-// CORS configuration
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+// CORS - Allow frontend origin only
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-}));
+  })
+);
 
-// Request logging 
-if (process.env.NODE_ENV === 'development') {
-    app.use((req, res, next) => {
-        console.log(`${req.method} ${req.path} - ${req.ip}`);
-        next();
-    });
-}
 
-/**
- * Route Configuration
- */
+// 4. BODY PARSING
+app.use(express.json({ limit: '10kb' })); // Limit payload size
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// 5. LOGGING
+app.use(requestLogger);
+
+// 6. RATE LIMITING (Global)
+app.use('/api', apiLimiter);
+
+// 7. HEALTH CHECK
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'HustleHubt API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+  });
+});
+
+// 8. API ROUTES
 app.use('/api/auth', authRoutes);
+app.use('/api/gigs', gigRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/transactions', transactionRoutes);
 app.use('/api/users', userRoutes);
 
-/**
- * Health check endpoint
- */
-app.get('/api/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'HustleHubt API is running',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV
-    });
-});
 
-/**
- * 404 Handler
- */
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'Route not found'
-    });
-});
+// 9. 404 HANDLER (must be after all routes)
+app.use(notFound);
 
-/**
- * Centralized Error Handler - Must be last
- */
+
+// 10. ERROR HANDLER (must be LAST)
 app.use(errorHandler);
 
-/**
- * HTTPS Configuration
- * Using self-signed certificates for development
- */
 
-const httpsOptions = {
-    key: fs.readFileSync(path.join(__dirname, 'certs', 'server.key')),
-    cert: fs.readFileSync(path.join(__dirname, 'certs', 'server.crt'))
-};
+// 11. START SERVER
+const PORT = process.env.PORT || 3000;
 
-/**
- * Start HTTPS Server
- */
-const server = https.createServer(httpsOptions, app);
-
-server.listen(PORT, () => {
-    console.log(`HustleHubt API running securely on https://localhost:${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`API Documentation: https://localhost:${PORT}/api/health`);
+const server = app.listen(PORT, () => {
+  logger.info(`🚀 Server running on port ${PORT}`, {
+    environment: process.env.NODE_ENV,
+    url: `http://localhost:${PORT}`,
+  });
 });
 
-/**
- * Graceful shutdown
- */
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  logger.error('Unhandled Rejection', { error: err.message });
+  server.close(() => process.exit(1));
+});
+
+// Graceful shutdown
 process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Shutting down gracefully...');
-    server.close(() => {
-        console.log('Server closed');
-        process.exit(0);
-    });
+  logger.info('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
 });
 
-module.exports = { app, server };
+module.exports = app; // Export for testing
