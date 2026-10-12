@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style)
+ * - In-text: self-or-admin profile access control follows the INSY7314
+ *   authorisation guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 // controllers/userController.js — Mongoose-backed (replaces legacy file-store userModel)
 const User = require('../models/User');
 

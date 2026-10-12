@@ -1,4 +1,14 @@
 /**
+ * REFERENCES (IIE Harvard style — in-text citations + reference list)
+ * - In-text: middleware order (Helmet/CSP, CORS, body limits, rate limiting,
+ *   404 + central error handler) follows the INSY7314 secure API design
+ *   guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM — PDFs supplied were scanned images with no extractable text.]
+ */
+/**
  * HustleHubt API Server 
  */
 

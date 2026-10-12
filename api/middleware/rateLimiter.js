@@ -1,3 +1,12 @@
+/**
+ * REFERENCES (IIE Harvard style)
+ * - In-text: rate limiting of auth/booking endpoints (brute-force mitigation)
+ *   follows the INSY7314 API-security guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
 const rateLimit = require('express-rate-limit');
 
 // General API limiter

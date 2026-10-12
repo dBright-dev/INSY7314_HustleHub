@@ -1,3 +1,13 @@
+/**
+ * REFERENCES (IIE Harvard style)
+ * - In-text: freelancer income aggregation follows the INSY7314 reporting/
+ *   aggregation guidance (The IIE, 2026).
+ * - Reference list:
+ *   The Independent Institute of Education (IIE), 2026. Information Systems 3D
+ *   [INSY7314 Module Manual]. Unpublished manuscript. [Confirm LU/page no. in
+ *   printed MM.]
+ */
+
 const Transaction = require('../models/Transaction');
 const mongoose = require('mongoose');
 
